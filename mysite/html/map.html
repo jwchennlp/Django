@@ -1,0 +1,58 @@
+<html >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>位置显现</title>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=6f66f030c72faae9e919701654699525"></script>
+<style type="text/css">  
+html{height:100%}  
+body{height:100%;margin:0px;padding:0px}  
+#container{height:100%}  
+</style>  
+</head>
+<body>
+<form action="/location/" method="get">
+		<input type="text" name="location" size="60"  >
+		<input type="submit" value="搜索" size="20" >
+</form>
+<div id="container"></div>
+<br />
+{% if latlong  %}
+<li>{{loc.longs}},{{loc.lat}}</li>
+	<script type="text/javascript"  charset="utf-8">
+	var json ="{{latlong|safe}}"
+	var map = new BMap.Map("container");
+	var point = new BMap.Point("{{loc.longs}}","{{loc.lat}}");
+	map.centerAndZoom(point, 13);
+	map.addControl(new BMap.NavigationControl());
+	map.enableScrollWheelZoom();
+	var marker = new BMap.Marker(point);
+	map.addOverlay(marker);
+	var circle = new BMap.Circle(point,5000,{fillColor:"blue", strokeWeight: 1 ,fillOpacity: 0.3, strokeOpacity: 0.3});
+   map.addOverlay(circle);
+	</script>
+	{% for v,j in latlong.items%}
+	<li>{{j.longs}},{{j.lat}},{{j.info}},{{j.address}}</li>
+			<script type="text/javascript" >
+				var s="{{j|safe}}"
+				var j = eval("("+s+")");
+				var point = new BMap.Point(j.longs,j.lat);
+				var marker = new BMap.Marker(point);
+				map.addOverlay(marker);
+				marker.addEventListener("click",function () {
+				var info="微博:"+"{{j.info}}"+'\n';
+				alert(info+"地点："+"{{j.address}}");
+});
+			</script>
+	{% endfor %}
+{% endif %}
+{% if error %}
+	<script type="text/javascript" >
+	var map = new BMap.Map("container");
+	var point = new BMap.Point(126.615019,45.733438);
+	map.centerAndZoom(point, 5);
+	map.addControl(new BMap.NavigationControl());
+	map.enableScrollWheelZoom();
+	</script>
+{% endif %}
+</body>
+</html>

@@ -1,0 +1,8 @@
+<html>
+<head>
+<title>time</title>
+</head>
+<body>
+It is now {{current}}}
+</body>
+</html>
